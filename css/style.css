@@ -1,0 +1,57 @@
+body {
+	font-family:'Quicksand'; 
+	margin-top: 50px;
+	margin-left: 100px; 
+	margin-right: 100px;
+	background:#f2f4f7;
+}
+#title {
+	font-size:50px;
+	text-align: center;
+	color:#6d9eeb;
+}
+#utext {
+	height:400px;
+	width: 450px;
+	font-size: 16px;
+	font-family:'Quicksand';
+	border-radius: 6px;
+}
+#ignore {
+	font-size: 16px;
+	width: 500px;
+	font-family:'Quicksand';
+	border-radius: 6px;
+}
+#user_input{
+	text-align: center;
+	width:100%;
+}
+#result_words {
+	text-align: left;
+}
+#settings {
+	text-align: left;
+}
+#error{
+		display:none;
+}
+textarea{
+	resize: none;
+}
+.column {
+    float: left;
+    width: 50%;
+}
+#enter {	
+	font-size: 18px;
+	font-family: 'Quicksand';
+	border: 2px solid #657591;
+	border-radius: 8px;
+}
+#ig_but {
+	font-size: 16px;
+	font-family: 'Quicksand';
+	border: 2px solid #657591;
+	border-radius: 8px;
+}
