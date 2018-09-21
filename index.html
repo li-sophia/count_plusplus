@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html>
+ <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+ <link rel="stylesheet" href="css/style.css">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<head>
+	<title>count++</title>
+</head>
+<body>
+	<h1 id = "title">count++</h1>
+	<h3 style="text-align: center">Type. Enter. Delete. Repeat.</h3>
+	<br><br>
+	<div class="row">
+		<div class ="column">
+			<form id = "user_input">
+				<textarea id="utext" name = "utext" placeholder="Enter some text! Give us some text with overused words and we'll let you know which overused words are overused! You can even tell us which overused words to ignore."></textarea>
+				<br>
+				<button type="button" id = "enter" name ="enter">enter</button>
+			</form>
+		</div>
+
+		<div class ="column">
+			<div id = 'settings'>
+				<h2 style="color:#43587c">current settings</h2>
+				<p id = "max">measure of redundancy: 10% of the word count</p>
+				<textarea id="ignore" name = "ignore" placeholder="Enter words to ignore"></textarea><br>
+				<button type="button" id = "ig_but" name ="ig_but">submit</button>
+				<p id = "ignore_list"></p>
+			</div><br><hr>
+			<div id = 'result_words'>
+				<h2 id = "result_msg" style="color:#43587c">redundant words</h2>
+				<table id = "table_result" style="width:100%">
+					<tr>
+						<th>words</th>
+						<th>occurences</th>
+					</tr>
+					<tr><p id = words_list></p></tr>
+				</table>
+				<br>
+			</div>
+		</div>
+	</div>
+
+	<script type ="text/javascript">
+		
+		var words_to_ig = [];
+		$( "#ig_but" ).click(function() {
+			var value = $("#ignore").val();
+			words_to_ig = value.split(" ");
+			var text= "words to ignore: ";
+			for (i= 0; i < words_to_ig.length ; i++){
+				text+= words_to_ig[i] + " ";
+			}
+			for (i = 0 ; i < words_to_ig.length; i++){
+				words_to_ig[i] = remove_punc(words_to_ig[i]);
+			}
+			document.getElementById("ignore_list").innerHTML = text; 
+		});
+		$( "#enter" ).click(function() {
+			//entire text input
+			var value = $("#utext").val();
+			
+			//array of all words
+			var arr = value.split(" ");
+			
+			//maximum frequency is 10% of word count
+			var max_freq = parseInt(0.1*arr.length,0); 
+			
+			document.getElementById("max").innerHTML = "measure of redundancy: " + max_freq;
+			
+			//clear rows each time enter button is pressed
+			var x = document.getElementById("table_result").rows.length;
+			for (i = 1; i < x; i++){
+				document.getElementById("table_result").deleteRow(i);
+			}
+			//array of unique words 
+			var unique  = [];
+		
+			// this loop filters the array with all the words and adds elements that are unique in the array unique
+			for (i= 0; i < arr.length ; i++){
+				var exist = false;
+				for (j = 0 ; j < unique.length; j++) {	
+					if (arr[i] == unique[j] || check_punc(arr[i], unique[j]) || check_punc(unique[j], arr[i])) {
+						exist = true ;
+					}
+				} 
+				if (exist == false) {
+					var x = remove_punc(arr[i]); 
+					unique.push(x);
+				}
+			}
+			
+			//count is an array that counts the occurences of every unique element
+			var count = []; 
+			count.length = unique.length;
+			//counts how many times each unique element occurs in the entire text
+			for (i =0; i < unique.length; i++){
+				count[i] = 0;
+				for (j = 0 ; j < arr.length; j++) {	
+					if (arr[j] == unique[i] || check_punc(arr[j], unique[i]) || check_punc(unique[i], arr[j])) {
+						//var x = unique.indexof(unique[i]);
+						count[i] += 1;
+					}
+				}
+			}
+			//num_uniques is the number of unique words from the text input
+			var num_uniques = unique.length;
+			var i = num_uniques - 1;
+			//outputs all the unique words that occur more than the maximum frequency into a table
+			while(num_uniques > 0 && i > -1) {
+				var word = unique.pop();
+				var num = count[i];
+				var mem = false;
+				if (num > max_freq && !member(word, words_to_ig)) {
+					$('table').append( "<tr> \ <td>"+ word + "</td> \ <td>" + num +"</td></tr>"); 
+				}
+				i--;
+			}
+		});
+		
+		// check_punc(word, unique) returns true if word and unique are the same ignoring punc, otherwise false
+		function check_punc(word,unique){
+			var punc = [",", ".", "!","?"];
+			for (i = 0 ; i< punc.length; i++) {
+				if (word.includes(punc[i], 0) && (word.replace(punc[i], "") == unique)) {
+					return true;
+				}
+			}
+			var word_lower = word.toLowerCase();
+			var unique_lower = unique.toLowerCase();
+			return word_lower == unique_lower;
+		}
+		// remove_punc(word) returns word with all punctuation removed
+		function remove_punc(word){
+			var punc = [",", ".", "!","?"];
+			for (i = 0 ; i< punc.length; i++) {
+				if (word.includes(punc[i], 0)) {
+					return (word.replace(punc[i], ""));
+				}
+			}
+			return word;
+		}
+		function member (a, arr){
+			for (i = 0; i < arr.length; i++){
+				if (a == arr[i]){
+					return true;
+				}
+			}
+			return false; 
+		}
+	</script>
+	</body>
+</html> 
